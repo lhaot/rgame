@@ -2,7 +2,7 @@ use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::input::ButtonInput;
 use bevy::prelude::{
-    Circle, Color, Commands, Component, default, KeyCode, Mesh, Query, Res, ResMut, Transform, With,
+    default, Circle, Color, Commands, Component, KeyCode, Mesh, Query, Res, ResMut, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::time::Time;
@@ -23,15 +23,15 @@ impl bevy::app::Plugin for PlayerPlugin {
 pub struct PlayerPlugin;
 
 #[derive(Component)]
-struct Player;
+pub struct Player;
 
 fn spawn_player(
     mut cmd: Commands,
-    mut meshs: ResMut<Assets<Mesh>>,
+    mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     let bundle = MaterialMesh2dBundle {
-        mesh: Mesh2dHandle(meshs.add(Circle::new(PLAYER_RADIUS))),
+        mesh: Mesh2dHandle(meshes.add(Circle::new(PLAYER_RADIUS))),
         material: materials.add(Color::rgb(255., 255., 255.)),
         transform: Transform::from_xyz(0., 0., 0.),
         ..default()
@@ -66,6 +66,12 @@ fn move_player(
         transform.translation.x + distance_x,
         transform.translation.y + distance_y,
     );
-    transform.translation.x = new_x.clamp(wall::LEFT_WALL + PLAYER_RADIUS, wall::RIGHT_WALL - PLAYER_RADIUS);
-    transform.translation.y = new_y.clamp(wall::BOTTOM_WALL + PLAYER_RADIUS, wall::TOP_WALL - PLAYER_RADIUS);
+    transform.translation.x = new_x.clamp(
+        wall::LEFT_WALL_POS + PLAYER_RADIUS,
+        wall::RIGHT_WALL_POS - PLAYER_RADIUS,
+    );
+    transform.translation.y = new_y.clamp(
+        wall::BOTTOM_WALL_POS + PLAYER_RADIUS,
+        wall::TOP_WALL_POS - PLAYER_RADIUS,
+    );
 }
