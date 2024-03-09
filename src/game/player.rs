@@ -1,3 +1,5 @@
+use crate::game::state::GameState;
+use crate::game::wall;
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::input::ButtonInput;
@@ -7,9 +9,6 @@ use bevy::prelude::{
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::time::Time;
-
-use crate::state::GameState;
-use crate::wall;
 
 pub const PLAYER_RADIUS: f32 = 5.;
 const PLAYER_SPEED: f32 = 300.;

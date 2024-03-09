@@ -1,5 +1,9 @@
 use std::ops::DivAssign;
 
+use crate::game::player::Player;
+use crate::game::state::GameState;
+use crate::game::wall;
+use crate::game::wall::{is_out_of_wall, WALL_LEN};
 use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
 use bevy::math::{vec2, vec3, Vec2, Vec3};
@@ -11,11 +15,6 @@ use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::time::{Time, Timer, TimerMode};
 use bevy::utils::default;
 use rand::Rng;
-
-use crate::player::Player;
-use crate::state::GameState;
-use crate::wall;
-use crate::wall::{is_out_of_wall, WALL_LEN};
 
 const GEN_NUM_PER_TIME: i32 = 2;
 const BALL_BASE_SPEED: f32 = 150.;

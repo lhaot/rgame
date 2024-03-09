@@ -1,12 +1,10 @@
+use crate::game::ball::Ball;
+use crate::game::player::Player;
+use crate::game::{ball, player};
 use bevy::app::App;
 use bevy::prelude::{
-    Commands, Component, in_state, IntoSystemConfigs, NextState, Query, States,
-    Transform, With,
+    in_state, Commands, Component, IntoSystemConfigs, NextState, Query, States, Transform, With,
 };
-
-use crate::{ball, player};
-use crate::ball::Ball;
-use crate::player::Player;
 
 #[derive(Component)]
 pub struct StatePlugin;

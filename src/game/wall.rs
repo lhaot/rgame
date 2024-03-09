@@ -4,7 +4,7 @@ use bevy::prelude::{Color, Commands, Component, Transform};
 use bevy::sprite::{Sprite, SpriteBundle};
 use bevy::utils::default;
 
-use crate::wall::WallLocation::{Bottom, Left, Right, Top};
+use crate::game::wall::WallLocation::{Bottom, Left, Right, Top};
 
 pub const WALL_LEN: f32 = 400.;
 pub const LEFT_WALL_POS: f32 = -WALL_LEN / 2.;
