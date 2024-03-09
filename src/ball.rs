@@ -76,7 +76,7 @@ fn rand_spawn_pos() -> Vec3 {
     let i = rand::thread_rng().gen_range(0..walls.len());
     let wall = &walls[i];
     let pos = wall.go_on_wall(rand::random::<f32>() * WALL_LEN);
-    vec3(pos.x, pos.y, -1.)
+    vec3(pos.x, pos.y, 1.)
 }
 
 fn velocity_to_player(pos: Vec3, player_translation: Vec3) -> Velocity {
