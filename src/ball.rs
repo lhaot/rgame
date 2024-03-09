@@ -4,8 +4,8 @@ use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
 use bevy::math::{vec2, vec3, Vec2, Vec3};
 use bevy::prelude::{
-    Circle, Color, Commands, Component, Deref, DerefMut, Entity, Mesh, Query, Res, ResMut,
-    Resource, Transform, With,
+    in_state, Circle, Color, Commands, Component, Deref, DerefMut, Entity, IntoSystemConfigs, Mesh,
+    Query, Res, ResMut, Resource, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::time::{Time, Timer, TimerMode};
@@ -13,6 +13,7 @@ use bevy::utils::default;
 use rand::Rng;
 
 use crate::player::Player;
+use crate::state::GameState;
 use crate::wall;
 use crate::wall::{is_out_of_wall, WALL_LEN};
 
@@ -26,7 +27,8 @@ impl Plugin for EnemyPlugin {
         app.insert_resource(SpawnTimer(Timer::from_seconds(1., TimerMode::Repeating)))
             .add_systems(
                 bevy::app::FixedUpdate,
-                (apply_velocity, spawn_enemy, despawn_if_out_of_wall),
+                (apply_velocity, spawn_enemy, despawn_if_out_of_wall)
+                    .run_if(in_state(GameState::Running)),
             );
     }
 }

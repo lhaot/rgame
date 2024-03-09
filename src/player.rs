@@ -2,20 +2,25 @@ use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::input::ButtonInput;
 use bevy::prelude::{
-    default, Circle, Color, Commands, Component, KeyCode, Mesh, Query, Res, ResMut, Transform, With,
+    default, in_state, Circle, Color, Commands, Component, IntoSystemConfigs, KeyCode, Mesh, Query,
+    Res, ResMut, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::time::Time;
 
+use crate::state::GameState;
 use crate::wall;
 
-const PLAYER_RADIUS: f32 = 5.;
+pub const PLAYER_RADIUS: f32 = 5.;
 const PLAYER_SPEED: f32 = 300.;
 
 impl bevy::app::Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(bevy::app::Startup, spawn_player);
-        app.add_systems(bevy::app::FixedUpdate, move_player);
+        app.add_systems(
+            bevy::app::FixedUpdate,
+            move_player.run_if(in_state(GameState::Running)),
+        );
     }
 }
 
