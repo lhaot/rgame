@@ -1,18 +1,17 @@
 use std::ops::DivAssign;
 
 use crate::game::player::Player;
-use crate::game::state::GameState;
 use crate::game::wall;
 use crate::game::wall::{is_out_of_wall, WALL_LEN};
+use crate::state::GameState;
 use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
 use bevy::math::{vec2, vec3, Vec2, Vec3};
 use bevy::prelude::{
     in_state, Circle, Color, Commands, Component, Deref, DerefMut, Entity, IntoSystemConfigs, Mesh,
-    Query, Res, ResMut, Resource, Transform, With,
+    Query, Res, ResMut, Resource, Time, Timer, TimerMode, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
-use bevy::time::{Time, Timer, TimerMode};
 use bevy::utils::default;
 use rand::Rng;
 

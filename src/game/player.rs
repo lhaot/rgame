@@ -1,14 +1,13 @@
-use crate::game::state::GameState;
 use crate::game::wall;
+use crate::state::GameState;
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::input::ButtonInput;
 use bevy::prelude::{
-    default, in_state, Circle, Color, Commands, Component, IntoSystemConfigs, KeyCode, Mesh, Query,
-    Res, ResMut, Transform, With,
+    default, in_state, Circle, Color, ColorMaterial, Commands, Component, IntoSystemConfigs,
+    KeyCode, Mesh, Query, Res, ResMut, Time, Transform, With,
 };
-use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
-use bevy::time::Time;
+use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
 
 pub const PLAYER_RADIUS: f32 = 5.;
 const PLAYER_SPEED: f32 = 300.;

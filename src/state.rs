@@ -1,18 +1,25 @@
-use crate::game::ball::Ball;
-use crate::game::player::Player;
-use crate::game::{ball, player};
 use bevy::app::App;
 use bevy::prelude::{
     in_state, Commands, Component, IntoSystemConfigs, NextState, Query, States, Transform, With,
 };
 
+use crate::game::ball::Ball;
+use crate::game::player::Player;
+use crate::game::{ball, player};
+
 #[derive(Component)]
 pub struct StatePlugin;
+
+#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
+pub(crate) enum GameState {
+    #[default]
+    Menu,
+    Running,
+}
 
 impl bevy::app::Plugin for StatePlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<GameState>()
-            .insert_state(GameState::Running)
             .add_systems(
                 bevy::app::FixedUpdate,
                 pause_if_collision.run_if(in_state(GameState::Running)),
@@ -20,13 +27,10 @@ impl bevy::app::Plugin for StatePlugin {
     }
 }
 
-#[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
-pub(crate) enum GameState {
-    #[default]
-    Running,
-    Pause,
-}
-
+/// while state is `GameState::Running`.
+///
+/// check distance between player and enemies.
+/// switch to `GameState::Pause` if collied
 fn pause_if_collision(
     mut cmd: Commands,
     player_transform_query: Query<&Transform, With<Player>>,
@@ -44,7 +48,7 @@ fn pause_if_collision(
         );
         let distance_powi2 = (px - bx).powi(2) + (py - by).powi(2);
         if distance_powi2 < collision_powi2 {
-            cmd.insert_resource(NextState(Some(GameState::Pause)))
+            cmd.insert_resource(NextState(Some(GameState::Menu)))
         }
     }
 }
