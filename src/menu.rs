@@ -1,5 +1,8 @@
 use bevy::app::App;
-use bevy::prelude::{ButtonInput, Commands, Component, in_state, IntoSystemConfigs, KeyCode, NextState, OnEnter, OnExit, Res, Update};
+use bevy::prelude::{
+    in_state, ButtonInput, Commands, Component, IntoSystemConfigs, KeyCode, NextState, OnEnter,
+    OnExit, Res, Update,
+};
 
 use crate::state::GameState;
 
@@ -21,10 +24,7 @@ fn spawn_menu() {
     println!("spawn menu");
 }
 
-fn handle_menu_input(
-    mut cmd: Commands,
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-) {
+fn handle_menu_input(mut cmd: Commands, keyboard_input: Res<ButtonInput<KeyCode>>) {
     if keyboard_input.pressed(KeyCode::Space) {
         cmd.insert_resource(NextState(Some(GameState::Running)))
     }

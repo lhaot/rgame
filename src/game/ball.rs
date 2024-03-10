@@ -1,19 +1,20 @@
 use std::ops::DivAssign;
 
-use crate::game::player::Player;
-use crate::game::wall;
-use crate::game::wall::{is_out_of_wall, WALL_LEN};
-use crate::state::GameState;
 use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
-use bevy::math::{vec2, vec3, Vec2, Vec3};
+use bevy::math::{vec2, Vec2, vec3, Vec3};
 use bevy::prelude::{
-    in_state, Circle, Color, Commands, Component, Deref, DerefMut, Entity, IntoSystemConfigs, Mesh,
-    Query, Res, ResMut, Resource, Time, Timer, TimerMode, Transform, With,
+    Circle, Color, Commands, Component, Deref, DerefMut, Entity, in_state, IntoSystemConfigs, Mesh,
+    OnEnter, Query, Res, ResMut, Resource, Time, Timer, TimerMode, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
 use bevy::utils::default;
 use rand::Rng;
+
+use crate::game::player::Player;
+use crate::game::wall;
+use crate::game::wall::{is_out_of_wall, WALL_LEN};
+use crate::state::GameState;
 
 const GEN_NUM_PER_TIME: i32 = 2;
 const BALL_BASE_SPEED: f32 = 150.;
@@ -23,6 +24,7 @@ pub const BALL_RADIUS: f32 = 3.;
 impl Plugin for EnemyPlugin {
     fn build(&self, app: &mut App) {
         app.insert_resource(SpawnTimer(Timer::from_seconds(1., TimerMode::Repeating)))
+            .add_systems(OnEnter(GameState::Running), despawn_all_enemy)
             .add_systems(
                 bevy::app::FixedUpdate,
                 (apply_velocity, spawn_enemy, despawn_if_out_of_wall)
@@ -35,7 +37,7 @@ impl Plugin for EnemyPlugin {
 pub struct EnemyPlugin;
 
 #[derive(Component)]
-pub struct Ball;
+pub struct Enemy;
 
 #[derive(Component, Deref, DerefMut)]
 struct Velocity(Vec2);
@@ -65,7 +67,7 @@ fn spawn_enemy(
 
         let player_translation = player_transform.get_single().unwrap().translation;
         let velocity = velocity_to_player(pos, player_translation);
-        cmd.spawn((Ball, bundle, velocity));
+        cmd.spawn((Enemy, bundle, velocity));
     }
 }
 
@@ -89,17 +91,24 @@ fn velocity_to_player(pos: Vec3, player_translation: Vec3) -> Velocity {
     Velocity(vec2(vx, vy))
 }
 
-fn apply_velocity(mut query: Query<(&mut Transform, &Velocity), With<Ball>>, time: Res<Time>) {
+fn apply_velocity(mut query: Query<(&mut Transform, &Velocity), With<Enemy>>, time: Res<Time>) {
     for (mut transform, velocity) in &mut query {
         transform.translation.x += velocity.x * time.delta_seconds();
         transform.translation.y += velocity.y * time.delta_seconds();
     }
 }
 
-fn despawn_if_out_of_wall(mut cmd: Commands, query: Query<(Entity, &Transform), With<Ball>>) {
+fn despawn_if_out_of_wall(mut cmd: Commands, query: Query<(Entity, &Transform), With<Enemy>>) {
     for (entity, transform) in &query {
         if is_out_of_wall(transform.translation.x, transform.translation.y) {
             cmd.entity(entity).despawn();
         }
+    }
+}
+
+#[inline]
+fn despawn_all_enemy(mut cmd: Commands, query: Query<Entity, With<Enemy>>) {
+    for enemy in query.iter() {
+        cmd.entity(enemy).despawn();
     }
 }

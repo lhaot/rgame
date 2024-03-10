@@ -1,21 +1,25 @@
-use crate::game::wall;
-use crate::state::GameState;
 use bevy::app::App;
 use bevy::asset::Assets;
 use bevy::input::ButtonInput;
 use bevy::prelude::{
-    default, in_state, Circle, Color, ColorMaterial, Commands, Component, IntoSystemConfigs,
-    KeyCode, Mesh, Query, Res, ResMut, Time, Transform, With,
+    default, in_state, Circle, Color, ColorMaterial, Commands, Component, Entity,
+    IntoSystemConfigs, KeyCode, Mesh, OnEnter, Query, Res, ResMut, Time, Transform, With,
 };
 use bevy::sprite::{MaterialMesh2dBundle, Mesh2dHandle};
+
+use crate::game::wall;
+use crate::state::GameState;
 
 pub const PLAYER_RADIUS: f32 = 5.;
 const PLAYER_SPEED: f32 = 300.;
 
 impl bevy::app::Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(bevy::app::Startup, spawn_player);
         app.add_systems(
+            OnEnter(GameState::Running),
+            (despawn_player, spawn_player).chain(),
+        )
+        .add_systems(
             bevy::app::FixedUpdate,
             move_player.run_if(in_state(GameState::Running)),
         );
@@ -77,4 +81,10 @@ fn move_player(
         wall::BOTTOM_WALL_POS + PLAYER_RADIUS,
         wall::TOP_WALL_POS - PLAYER_RADIUS,
     );
+}
+
+fn despawn_player(mut cmd: Commands, query: Query<Entity, With<Player>>) {
+    if let Ok(player) = query.get_single() {
+        cmd.entity(player).despawn();
+    }
 }

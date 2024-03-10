@@ -3,7 +3,7 @@ use bevy::prelude::{
     in_state, Commands, Component, IntoSystemConfigs, NextState, Query, States, Transform, With,
 };
 
-use crate::game::ball::Ball;
+use crate::game::ball::Enemy;
 use crate::game::player::Player;
 use crate::game::{ball, player};
 
@@ -19,11 +19,10 @@ pub(crate) enum GameState {
 
 impl bevy::app::Plugin for StatePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<GameState>()
-            .add_systems(
-                bevy::app::FixedUpdate,
-                pause_if_collision.run_if(in_state(GameState::Running)),
-            );
+        app.init_state::<GameState>().add_systems(
+            bevy::app::FixedUpdate,
+            pause_if_collision.run_if(in_state(GameState::Running)),
+        );
     }
 }
 
@@ -34,7 +33,7 @@ impl bevy::app::Plugin for StatePlugin {
 fn pause_if_collision(
     mut cmd: Commands,
     player_transform_query: Query<&Transform, With<Player>>,
-    ball_transforms_query: Query<&Transform, With<Ball>>,
+    ball_transforms_query: Query<&Transform, With<Enemy>>,
 ) {
     let collision_powi2 = (player::PLAYER_RADIUS + ball::BALL_RADIUS).powi(2);
     let (px, py) = (
