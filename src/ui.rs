@@ -7,9 +7,9 @@ use bevy::prelude::{
 use crate::state::GameState;
 
 #[derive(Component)]
-pub(crate) struct MenuPlugin;
+pub(crate) struct UiPlugin;
 
-impl bevy::app::Plugin for MenuPlugin {
+impl bevy::app::Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(OnEnter(GameState::Menu), spawn_menu)
             .add_systems(OnExit(GameState::Menu), despawn_menu)
