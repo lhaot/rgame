@@ -1,8 +1,12 @@
+use std::ops::AddAssign;
+use std::time::Duration;
+
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, ButtonInput, Commands, Component, IntoSystemConfigs, KeyCode, NextState, OnEnter,
-    OnExit, Res, Update,
+    in_state, Commands, Component, Deref, DerefMut, FixedUpdate, IntoSystemConfigs, OnEnter, Query,
+    Res, ResMut, Resource, Startup, Text, TextBundle, TextSection, TextStyle, Time, With,
 };
+use bevy::utils::default;
 
 use crate::state::GameState;
 
@@ -11,25 +15,59 @@ pub(crate) struct UiPlugin;
 
 impl bevy::app::Plugin for UiPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(OnEnter(GameState::Menu), spawn_menu)
-            .add_systems(OnExit(GameState::Menu), despawn_menu)
-            .add_systems(Update, handle_menu_input.run_if(in_state(GameState::Menu)));
+        app.add_systems(Startup, setup_ui)
+            .add_systems(OnEnter(GameState::Running), reset_ui)
+            .add_systems(FixedUpdate, update_ui.run_if(in_state(GameState::Running)));
     }
 }
+
+const TIME_FONT_SIZE: f32 = 40.;
 
 #[derive(Component)]
-struct Menu;
+struct TimeBoardUi;
 
-fn spawn_menu() {
-    println!("spawn menu");
+#[derive(Resource, Deref, DerefMut)]
+struct RoundDuration(Duration);
+
+fn setup_ui(mut cmd: Commands) {
+    // setup time board ui
+    cmd.spawn((
+        TimeBoardUi,
+        TextBundle::from_sections([
+            TextSection {
+                value: String::from("Time: "),
+                style: TextStyle {
+                    font_size: TIME_FONT_SIZE,
+                    ..default()
+                },
+            },
+            TextSection {
+                value: format!("{:?}", Duration::default()),
+                style: TextStyle {
+                    font_size: TIME_FONT_SIZE,
+                    ..default()
+                },
+            },
+        ]),
+    ));
+    // insert round duration
+    cmd.insert_resource(RoundDuration(Duration::default()));
 }
 
-fn handle_menu_input(mut cmd: Commands, keyboard_input: Res<ButtonInput<KeyCode>>) {
-    if keyboard_input.pressed(KeyCode::Space) {
-        cmd.insert_resource(NextState(Some(GameState::Running)))
-    }
+fn update_ui(
+    time: Res<Time>,
+    mut duration: ResMut<RoundDuration>,
+    mut query: Query<&mut Text, With<TimeBoardUi>>,
+) {
+    duration.add_assign(time.delta());
+    let mut time_board_txt = query.get_single_mut().unwrap();
+    time_board_txt.sections[1].value = format!("{:2?}", duration.0)
 }
 
-fn despawn_menu() {
-    println!("despawn menu")
+fn reset_ui(
+    mut txt_query: Query<&mut Text, With<TimeBoardUi>>,
+    mut duration: ResMut<RoundDuration>,
+) {
+    duration.0 = Duration::default();
+    txt_query.get_single_mut().unwrap().sections[1].value = format!("{:?}", duration.0);
 }

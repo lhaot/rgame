@@ -2,9 +2,9 @@ use std::ops::DivAssign;
 
 use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
-use bevy::math::{vec2, Vec2, vec3, Vec3};
+use bevy::math::{vec2, vec3, Vec2, Vec3};
 use bevy::prelude::{
-    Circle, Color, Commands, Component, Deref, DerefMut, Entity, in_state, IntoSystemConfigs, Mesh,
+    in_state, Circle, Color, Commands, Component, Deref, DerefMut, Entity, IntoSystemConfigs, Mesh,
     OnEnter, Query, Res, ResMut, Resource, Time, Timer, TimerMode, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};

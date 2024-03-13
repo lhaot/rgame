@@ -2,8 +2,8 @@ use bevy::app::App;
 use bevy::prelude::{Camera2dBundle, Commands};
 
 mod game;
-mod ui;
 mod state;
+mod ui;
 
 fn main() {
     App::new()

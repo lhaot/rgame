@@ -1,6 +1,8 @@
 use bevy::app::App;
+use bevy::input::ButtonInput;
 use bevy::prelude::{
-    in_state, Commands, Component, IntoSystemConfigs, NextState, Query, States, Transform, With,
+    in_state, Commands, Component, FixedUpdate, IntoSystemConfigs, KeyCode, NextState, Plugin,
+    Query, Res, States, Transform, Update, With,
 };
 
 use crate::game::ball::Enemy;
@@ -13,16 +15,21 @@ pub struct StatePlugin;
 #[derive(Debug, Clone, Copy, Default, Eq, PartialEq, Hash, States)]
 pub(crate) enum GameState {
     #[default]
-    Menu,
+    Pause,
     Running,
 }
 
-impl bevy::app::Plugin for StatePlugin {
+impl Plugin for StatePlugin {
     fn build(&self, app: &mut App) {
-        app.init_state::<GameState>().add_systems(
-            bevy::app::FixedUpdate,
-            pause_if_collision.run_if(in_state(GameState::Running)),
-        );
+        app.init_state::<GameState>()
+            .add_systems(
+                FixedUpdate,
+                pause_if_collision.run_if(in_state(GameState::Running)),
+            )
+            .add_systems(
+                Update,
+                handle_continue_input.run_if(in_state(GameState::Pause)),
+            );
     }
 }
 
@@ -47,7 +54,13 @@ fn pause_if_collision(
         );
         let distance_powi2 = (px - bx).powi(2) + (py - by).powi(2);
         if distance_powi2 < collision_powi2 {
-            cmd.insert_resource(NextState(Some(GameState::Menu)))
+            cmd.insert_resource(NextState(Some(GameState::Pause)))
         }
+    }
+}
+
+fn handle_continue_input(mut cmd: Commands, keyboard_input: Res<ButtonInput<KeyCode>>) {
+    if keyboard_input.pressed(KeyCode::Space) {
+        cmd.insert_resource(NextState(Some(GameState::Running)))
     }
 }
