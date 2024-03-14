@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use bevy::app::App;
 use bevy::prelude::{
-    in_state, Commands, Component, Deref, DerefMut, FixedUpdate, IntoSystemConfigs, OnEnter, Query,
+    Commands, Component, Deref, DerefMut, FixedUpdate, in_state, IntoSystemConfigs, OnEnter, Query,
     Res, ResMut, Resource, Startup, Text, TextBundle, TextSection, TextStyle, Time, With,
 };
 use bevy::utils::default;
@@ -42,7 +42,7 @@ fn setup_ui(mut cmd: Commands) {
                 },
             },
             TextSection {
-                value: format!("{:?}", Duration::default()),
+                value: fmt_duration(&Duration::default()),
                 style: TextStyle {
                     font_size: TIME_FONT_SIZE,
                     ..default()
@@ -61,7 +61,7 @@ fn update_ui(
 ) {
     duration.add_assign(time.delta());
     let mut time_board_txt = query.get_single_mut().unwrap();
-    time_board_txt.sections[1].value = format!("{:2?}", duration.0)
+    time_board_txt.sections[1].value = fmt_duration(&duration.0)
 }
 
 fn reset_ui(
@@ -69,5 +69,12 @@ fn reset_ui(
     mut duration: ResMut<RoundDuration>,
 ) {
     duration.0 = Duration::default();
-    txt_query.get_single_mut().unwrap().sections[1].value = format!("{:?}", duration.0);
+    txt_query.get_single_mut().unwrap().sections[1].value = fmt_duration(&duration.0);
+}
+
+fn fmt_duration(duration: &Duration) -> String {
+    let millis = duration.as_millis() % 1000;
+    let secs = duration.as_secs() % 60;
+    let mins = duration.as_secs() / 60;
+    format!("{:0>2}:{:0>2}:{:0>3}", mins, secs, millis)
 }
