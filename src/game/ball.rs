@@ -2,9 +2,9 @@ use std::ops::DivAssign;
 
 use bevy::app::{App, Plugin};
 use bevy::asset::Assets;
-use bevy::math::{vec2, vec3, Vec2, Vec3};
+use bevy::math::{vec2, Vec2, vec3, Vec3};
 use bevy::prelude::{
-    in_state, Circle, Color, Commands, Component, Deref, DerefMut, Entity, IntoSystemConfigs, Mesh,
+    Circle, Color, Commands, Component, Deref, DerefMut, Entity, in_state, IntoSystemConfigs, Mesh,
     OnEnter, Query, Res, ResMut, Resource, Time, Timer, TimerMode, Transform, With,
 };
 use bevy::sprite::{ColorMaterial, MaterialMesh2dBundle, Mesh2dHandle};
@@ -56,7 +56,7 @@ fn spawn_enemy(
     if !timer.0.tick(time.delta()).just_finished() {
         return;
     }
-    for _ in 0..GEN_NUM_PER_TIME {
+    for _ in 0..(GEN_NUM_PER_TIME + (time.elapsed().as_secs() / 10) as i32) {
         let pos = rand_spawn_pos();
         let bundle = MaterialMesh2dBundle {
             mesh: Mesh2dHandle(meshes.add(Circle::new(BALL_RADIUS))),
