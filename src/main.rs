@@ -1,5 +1,7 @@
 use bevy::app::App;
-use bevy::prelude::{Camera2dBundle, Commands};
+use bevy::DefaultPlugins;
+use bevy::prelude::{Camera2dBundle, Commands, Startup, Update};
+use bevy::window::close_on_esc;
 
 mod game;
 mod state;
@@ -7,10 +9,10 @@ mod ui;
 
 fn main() {
     App::new()
-        .add_plugins(bevy::DefaultPlugins)
-        .add_systems(bevy::app::Startup, setup)
+        .add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
         .add_plugins((state::StatePlugin, ui::UiPlugin, game::GamePlugin))
-        .add_systems(bevy::app::Update, bevy::window::close_on_esc)
+        .add_systems(Update, close_on_esc)
         .run()
 }
 
