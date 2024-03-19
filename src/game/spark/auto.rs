@@ -11,7 +11,7 @@ use rand::Rng;
 
 use crate::game::{player, wall};
 use crate::game::player::Player;
-use crate::game::spark::{BALL_RADIUS, Enemy, Spark, SparkState, Velocity};
+use crate::game::spark::{Enemy, Spark, SparkState, Velocity};
 use crate::game::wall::{is_out_of_wall, WALL_LEN};
 use crate::state::GameState;
 
@@ -37,6 +37,7 @@ impl Plugin for Auto {
     }
 }
 
+const BALL_RADIUS: f32 = 3.;
 const GEN_NUM_PER_TIME: i32 = 3;
 const BALL_BASE_SPEED: f32 = 150.;
 const BALL_FLUCTUATE_RANGE: f32 = 250.;

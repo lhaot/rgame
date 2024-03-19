@@ -9,8 +9,6 @@ use crate::state::GameState;
 
 mod auto;
 
-pub const BALL_RADIUS: f32 = 3.;
-
 #[derive(Values, Copy, Clone, Debug, Hash, Eq, PartialEq)]
 enum Spark {
     Auto,
