@@ -26,7 +26,7 @@ struct CoolDownTimer(Timer);
 
 impl Plugin for Auto {
     fn build(&self, app: &mut App) {
-        app.insert_resource(DurationTimer(Timer::from_seconds(5., TimerMode::Repeating)))
+        app.insert_resource(DurationTimer(Timer::from_seconds(10., TimerMode::Repeating)))
             .insert_resource(CoolDownTimer(Timer::from_seconds(1., TimerMode::Repeating)))
             .add_systems(
                 FixedUpdate,
@@ -44,6 +44,7 @@ const BALL_FLUCTUATE_RANGE: f32 = 250.;
 fn spark(
     mut cmd: Commands,
     time: Res<Time>,
+    duration_timer: ResMut<DurationTimer>,
     mut cool_down_timer: ResMut<CoolDownTimer>,
     player_transform: Query<&Transform, With<Player>>,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -52,7 +53,8 @@ fn spark(
     if !cool_down_timer.0.tick(time.delta()).finished() {
         return;
     }
-    for _ in 0..GEN_NUM_PER_TIME {
+    let d = duration_timer.0.elapsed().as_secs() as i32 / 5;
+    for _ in 0..(GEN_NUM_PER_TIME + d) {
         // gen pos
         let pos = gen_pos();
         // gen unit velocity
