@@ -3,7 +3,7 @@ use std::time::Duration;
 
 use bevy::app::App;
 use bevy::prelude::{
-    Commands, Component, Deref, DerefMut, FixedUpdate, in_state, IntoSystemConfigs, OnEnter, Query,
+    in_state, Commands, Component, Deref, DerefMut, FixedUpdate, IntoSystemConfigs, OnEnter, Query,
     Res, ResMut, Resource, Startup, Text, TextBundle, TextSection, TextStyle, Time, With,
 };
 use bevy::utils::default;

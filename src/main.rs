@@ -1,7 +1,7 @@
 use bevy::app::App;
-use bevy::DefaultPlugins;
 use bevy::prelude::{Camera2dBundle, Commands, Startup, Update};
 use bevy::window::close_on_esc;
+use bevy::DefaultPlugins;
 
 mod game;
 mod state;

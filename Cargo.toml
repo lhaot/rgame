@@ -4,10 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+proc-macro = true
 
 [dependencies]
 bevy = { version = "0.13.0", features = ["dynamic_linking"] }
 rand = "0.8.5"
+syn = "2.0.53"
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]
