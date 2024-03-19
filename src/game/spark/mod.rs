@@ -1,9 +1,6 @@
 use bevy::app::{App, FixedUpdate};
 use bevy::math::Vec2;
-use bevy::prelude::{
-    Commands, Component, Deref, DerefMut, in_state, IntoSystemConfigs,
-    NextState, Plugin, States,
-};
+use bevy::prelude::{Commands, Component, Deref, DerefMut, Entity, in_state, IntoSystemConfigs, NextState, OnEnter, Plugin, Query, States, With};
 use rand::Rng;
 
 use rgame::Values;
@@ -39,6 +36,7 @@ impl Plugin for SparkPlugin {
     fn build(&self, app: &mut App) {
         app.init_state::<SparkState>()
             .insert_resource(NextState(Some(SparkState::Idle)))
+            .add_systems(OnEnter(GameState::Running), despawn_enemy)
             .add_systems(
                 FixedUpdate,
                 into_rand_spark
@@ -46,6 +44,15 @@ impl Plugin for SparkPlugin {
                     .run_if(in_state(SparkState::Idle)),
             )
             .add_plugins(auto::Auto);
+    }
+}
+
+fn despawn_enemy(
+    mut cmd: Commands,
+    enemies: Query<Entity, With<Enemy>>,
+) {
+    for enemy in enemies.iter() {
+        cmd.entity(enemy).despawn();
     }
 }
 
