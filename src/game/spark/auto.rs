@@ -54,7 +54,7 @@ fn spark(
     if !cool_down_timer.0.tick(time.delta()).finished() {
         return;
     }
-    let d = duration_timer.0.elapsed().as_secs() as i32 / 5;
+    let d = duration_timer.0.elapsed().as_secs() as i32 / 3;
     for _ in 0..(GEN_NUM_PER_TIME + d) {
         // gen pos
         let pos = gen_pos();
